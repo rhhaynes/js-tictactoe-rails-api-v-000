@@ -66,6 +66,7 @@ function attachGameListeners(){
       const state = data.data.attributes.state;
       turn = state.join('').length;
       setBoard(state);
+      if (!checkWinner() && turn===9) setMessage('Tie game.');
     });
   });
 }
