@@ -342,7 +342,7 @@ describe('Gameplay', () => {
 
     const board = Array.from(squares).map(s => s.innerHTML);
 
-    expect(board).to.have.ordered.members(['', '', '', '', 'O', '', '', '', '']);
+    expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
   });
 });
 
