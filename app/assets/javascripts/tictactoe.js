@@ -23,13 +23,6 @@ function attachListeners(){
 
 //== Listener Functions ========================================================
 
-function activateBoard(){
-  if (!$(this).text() && !checkWinner()){
-    debugger;
-    doTurn(this);
-  }
-}
-
 function resetBoard(){
   turn = 0;
   $('table').attr('id', '');
