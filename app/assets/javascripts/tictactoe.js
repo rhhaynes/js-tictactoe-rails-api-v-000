@@ -9,7 +9,7 @@ $(function(){
 });
 
 function attachListeners(){
-  $('td').on('click', () => {if (!$(this).text() && !checkWinner()) doTurn(this)});
+  $('td').on('click', () => {debugger; if (!$(this).text() && !checkWinner()) doTurn(this)});
 
   $('button#clear').on('click', () => resetBoard());
   $('button#save').on('click', () => saveBoard());
