@@ -1,88 +1,95 @@
 //== Globals ===================================================================
 
-window.state = Array(9).fill('');
-window.turn  = 0;
+var turn = 0;
 
-//== Game Board ================================================================
-
-$(function(){
-  $('td').on('click', function(e){
-    e.preventDefault();
-    if (!!$(this).text()){
-      setMessage('Position is already taken. Please make another selection.');
-    } else {
-      setMessage('');
-      doTurn(this);
-    }
-  });
-});
-
-//== Buttons ===================================================================
+//== Listeners =================================================================
 
 $(function(){
-  $('button#clear').on('click', function(e){
-    e.preventDefault();
-    resetBoard();
-  });
-});
-
-$(function(){
-  $('button#save').on('click', function(e){
-    e.preventDefault();
-    saveBoard();
-  });
-});
-
-$(function(){
-  $('button#previous').on('click', function(e){
-    e.preventDefault();
-    $.get('/games', function(data){
-      let gameList = '';
-      data.data.forEach(function(game){
-        gameList += `<button class="previous" data-id="${game.id}">Game ${game.id}</button><br/>`
-      });
-      insertGameButtons(gameList, attachListeners);
-    });
-  });
-});
-
-function insertGameButtons(gameList, attachListeners){
-  $('div#games').html(gameList);
   attachListeners();
-}
+});
 
 function attachListeners(){
-  $('button.previous').on('click', function(e){
-    e.preventDefault();
+  $('td').on('click', () => activateBoard());
+  $('button#clear').on('click', () => resetBoard();
+  $('button#save').on('click', () => saveBoard());
+  $('button#previous').on('click', () => loadGames());
+}
+
+//== Listener Functions ========================================================
+
+function activateBoard(){
+  if (!$(this).text() && !checkWinner()){
+    doTurn(this);
+  }
+}
+
+function resetBoard(){
+  turn = 0;
+  $('table').attr('id', '');
+  setMessage('');
+  setBoard(Array(9).fill(''));
+}
+
+function saveBoard(){
+  const gameId = $('table').attr('id');
+  if (!!gameId){
+    $.ajax({
+      method: "PATCH",
+      url: `/games/${gameId}`,
+      data: {'state': getState()}
+    });
+  } else {
+    $.post('/games', {'state': getState()}, function(data){
+      $('table').attr('id', data.data.id);
+    });
+  }
+}
+
+function loadGames(){
+  $.get('/games', function(data){
+    let gameList = '';
+    data.data.forEach(function(game){
+      gameList += `<button class="previous" data-id="${game.id}">Game ${game.id}</button><br/>`
+    });
+    createGameButtons(gameList, attachGameListeners);
+  });
+}
+
+function createGameButtons(gameList, attachGameListeners){
+  $('div#games').html(gameList);
+  attachGameListeners();
+}
+
+function attachGameListeners(){
+  $('button.previous').on('click', function(){
     $.get(`/games/${$(this).data('id')}`, function(data){
       $('div#games').html('');
-      window.state = data.data.attributes.state;
-      window.turn  = state.join('').split('').length;
       $('table').attr('id', data.data.id);
+      const state = data.data.attributes.state;
+      turn = state.join('').length;
       setBoard(state);
     });
   });
 }
 
-//== Functions =================================================================
+//== Game Functions ============================================================
 
 function doTurn(td){
-  window.turn++; updateState(td);
+  updateState(td); turn++;
   if (checkWinner()){
-    freezeBoard();
+    saveBoard(); resetBoard();
   } else if (turn===9){
     setMessage('Tie game.');
-    freezeBoard();
+    saveBoard(); resetBoard();
   }
 }
 
 function updateState(td){
   $(td).text(player(turn));
-  window.state = getState();
 }
 
 function player(){
-  return ( turn%2===0 ? 'X' : 'O' );
+  return ( turn%2 ? 'O' : 'X' );
 }
 
 function setMessage(msg){
@@ -108,12 +115,7 @@ function checkForWin(playerPos, playerTok){
   return status;
 }
 
-//== Helpers ===================================================================
-
-function resetGlobals(){
-  window.state = Array(9).fill('');
-  window.turn  = 0;
-}
+//== Helper Functions ==========================================================
 
 function getState(){
   const arr = [];
@@ -130,33 +132,5 @@ function setBoard(arr){
     for (let x=0; x<3; x++){
       $(`td[data-x=${x}][data-y=${y}]`).text(arr[y*3+x]);
     }
-  }
-}
-
-function freezeBoard(){
-  setBoard( getState().reduce( (arr,el) => {if (!el) el = ' '; arr.push(el); return arr}, []) );
-  saveBoard();
-  resetBoard();
-}
-
-function resetBoard(){
-  $('table').attr('id', '');
-  resetGlobals();
-  setMessage('');
-  setBoard(state);
-}
-
-function saveBoard(){
-  const gameId = $('table').attr('id');
-  if (!!gameId){
-    $.ajax({
-      method: "PATCH",
-      url: `/games/${gameId}`,
-      data: {'state': getState()}
-    });
-  } else {
-    $.post('/games', {'state': getState()}, function(data){
-      $('table').attr('id', data.data.id);
-    });
   }
 }
