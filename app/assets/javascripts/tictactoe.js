@@ -18,7 +18,7 @@ function attachListeners(){
 //== Listener Functions ========================================================
 
 function activateBoard(e){
-  if ( !$(e.target).text() && !checkWinner() ) doTurn(e.target);
+  if (!$(e.target).text() && !checkWinner()) doTurn(e.target);
 }
 
 function resetBoard(){
