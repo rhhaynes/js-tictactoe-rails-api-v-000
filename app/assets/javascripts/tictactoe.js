@@ -9,19 +9,17 @@ $(function(){
 });
 
 function attachListeners(){
-  $('td').on('click', function(e){
-    debugger;
-    if (!$(this).text() && !checkWinner()){
-      doTurn(this);
-    }
-  });
-
+  $('td').on('click', (e) => activateBoard(e));
   $('button#clear').on('click', () => resetBoard());
   $('button#save').on('click', () => saveBoard());
   $('button#previous').on('click', () => loadGames());
 }
 
 //== Listener Functions ========================================================
+
+function activateBoard(e){
+  doTurn(e.target);
+}
 
 function resetBoard(){
   turn = 0;
