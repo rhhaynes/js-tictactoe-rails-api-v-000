@@ -9,7 +9,7 @@ $(function(){
 });
 
 function attachListeners(){
-  $('td').on('click', () => activateBoard());
+  $('td').on('click', (e) => activateBoard());
   $('button#clear').on('click', () => resetBoard());
   $('button#save').on('click', () => saveBoard());
   $('button#previous').on('click', () => loadGames());
