@@ -19,6 +19,7 @@ function attachListeners(){
 
 function activateBoard(){
   if (!$(this).text() && !checkWinner()){
+    debugger;
     doTurn(this);
   }
 }
