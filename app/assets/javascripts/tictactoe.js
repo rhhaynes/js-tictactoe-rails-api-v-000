@@ -63,9 +63,8 @@ function attachGameListeners(){
     $.get(`/games/${$(this).data('id')}`, function(data){
       $('div#games').html('');
       $('table').attr('id', data.data.id);
-      const state = data.data.attributes.state;
-      turn = state.join('').length;
-      setBoard(state);
+      setBoard(data.data.attributes.state);
+      turn = getState().join('').length;
       if (!checkWinner() && turn===9) setMessage('Tie game.');
     });
   });
