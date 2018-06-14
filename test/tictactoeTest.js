@@ -228,12 +228,12 @@ describe('tictactoe.js', () => {
 
       const spy = sandbox.spy(window, 'setMessage');
 
-      populateBoard(['O', 'X', 'O', 'O', 'X', 'O', 'X', '', 'X']);
-      //  O | X | O
+      populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
+      //  X | O | X
       // -----------
-      //  O | X | O
+      //  X | O | X
       // -----------
-      //  X |   | X
+      //  O |   | O
 
       window.turn = 8;
       window.doTurn(squares[7]);
@@ -342,7 +342,7 @@ describe('Gameplay', () => {
 
     const board = Array.from(squares).map(s => s.innerHTML);
 
-    expect(board).to.have.ordered.members(['', '', '', '', 'O', '', '', '', '']);
+    expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
   });
 });
 
@@ -600,7 +600,7 @@ describe('AJAX interactions with the Rails API', () => {
       // -----------
       //  O | O |
 
-      squares[8].click();
+      squares[2].click();
 
       expect(requests[0].method).to.equal('POST');
       expect(requests[0].url).to.equal('/games');
